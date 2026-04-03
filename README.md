@@ -1,6 +1,6 @@
-# Subway Catering Chat - SwiftUI App
+# Catering Chat - SwiftUI App
 
-A modern iOS chatbot application for Subway catering orders, powered by AI and built with SwiftUI.
+A modern iOS chatbot application for   catering orders, powered by AI and built with SwiftUI.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ This app follows the architecture you specified:
 ## Project Structure
 
 ```
-SubwayCateringChat/
+ CateringChat/
 ├── Models/
 │   ├── APIModels.swift           # API request/response models
 │   └── Message.swift              # Chat message model
@@ -29,9 +29,9 @@ SubwayCateringChat/
 │       ├── LocationsListView.swift
 │       └── MenuListView.swift
 ├── Theme/
-│   └── Theme.swift                # Subway brand colors & styles
+│   └── Theme.swift                #   brand colors & styles
 ├── ContentView.swift              # Root view with splash screen
-└── SubwayCateringChatApp.swift    # App entry point
+└──  CateringChatApp.swift    # App entry point
 ```
 
 ## Features
@@ -46,7 +46,7 @@ SubwayCateringChat/
 ### UI Components
 - **Message Bubbles** - Distinct styling for user vs assistant messages
 - **Quick Reply Buttons** - Suggested actions for easy interaction
-- **Locations View** - Horizontal scrolling cards showing nearby Subway stores
+- **Locations View** - Horizontal scrolling cards showing nearby   stores
 - **Menu View** - Expandable categories with menu items and pricing
 - **Splash Screen** - Animated brand intro
 
@@ -63,9 +63,9 @@ SubwayCateringChat/
 
 All Swift files have been created in the correct directories. You need to add them to your Xcode project:
 
-1. Open `SubwayCateringChat.xcodeproj` in Xcode
-2. Right-click on the `SubwayCateringChat` folder in the navigator
-3. Select **"Add Files to SubwayCateringChat"**
+1. Open ` CateringChat.xcodeproj` in Xcode
+2. Right-click on the ` CateringChat` folder in the navigator
+3. Select **"Add Files to  CateringChat"**
 4. Navigate to each directory and add the files:
    - `Models/APIModels.swift`
    - `Models/Message.swift`
@@ -79,14 +79,14 @@ All Swift files have been created in the correct directories. You need to add th
    - `Views/Components/MenuListView.swift`
    - `Theme/Theme.swift`
 5. Make sure **"Copy items if needed"** is unchecked (files are already in place)
-6. Make sure **"SubwayCateringChat" target** is checked
+6. Make sure **" CateringChat" target** is checked
 
 ### 2. Update Info.plist for Network Access
 
 Since you're connecting to `localhost:3000`, you need to allow local network access:
 
 1. Open your Xcode project
-2. Select the `SubwayCateringChat` target
+2. Select the ` CateringChat` target
 3. Go to the **Info** tab
 4. Add the following key-value pair:
    - **Key:** `App Transport Security Settings` (Dictionary)
@@ -125,7 +125,7 @@ The server should be running at `http://localhost:3000`
 ## How to Use
 
 1. **Start Conversation** - App automatically creates a conversation on launch
-2. **Enter ZIP Code** - Type your ZIP code to find nearby Subway locations
+2. **Enter ZIP Code** - Type your ZIP code to find nearby   locations
 3. **Select Location** - Tap a location card or use suggested actions
 4. **Browse Menu** - Expand categories and tap items to add to order
 5. **Checkout** - Follow the conversation flow to complete your order
@@ -166,8 +166,8 @@ Response: { status: "ok", timestamp: string }
 
 ### Colors (Theme.swift)
 ```swift
-static let subwayGreen = Color(red: 0/255, green: 145/255, blue: 42/255)
-static let subwayYellow = Color(red: 252/255, green: 200/255, blue: 0/255)
+static let  Green = Color(red: 0/255, green: 145/255, blue: 42/255)
+static let  Yellow = Color(red: 252/255, green: 200/255, blue: 0/255)
 ```
 
 ### Base URL (APIClient.swift)
