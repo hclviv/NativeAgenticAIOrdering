@@ -21,6 +21,13 @@ class ChatViewModel {
     var conversationId: String?
     var menuShownInMessageId: UUID?
 
+    // Checkout flow
+    var showOrderDetailsSheet: Bool = false
+    var showApplePaySheet: Bool = false
+    var applePayLocationName: String? = nil
+    var applePayOrderTotal: Double? = nil
+    private var pendingOrderFormData: OrderFormData? = nil
+
     // MARK: - Private Properties
 
     private let apiClient: APIClient
@@ -57,6 +64,17 @@ class ChatViewModel {
         guard !messageText.isEmpty else { return }
         guard let conversationId = conversationId else {
             errorMessage = "No active conversation. Please restart the app."
+            return
+        }
+
+        // Intercept checkout intent — show order details form before calling the API
+        if isCheckoutIntent(messageText) {
+            let userMessage = Message(text: messageText, isUser: true)
+            messages.append(userMessage)
+            currentInput = ""
+            applePayLocationName = extractLocationName()
+            applePayOrderTotal = extractOrderTotal()
+            showOrderDetailsSheet = true
             return
         }
 
@@ -112,6 +130,50 @@ class ChatViewModel {
         await sendMessage(cleanedAction)
     }
 
+    /// Called when user taps "Place Order" in the order details form
+    func proceedToApplePay(formData: OrderFormData) {
+        showOrderDetailsSheet = false
+        pendingOrderFormData = formData
+        showApplePaySheet = true
+    }
+
+    /// Called when user cancels the order details form
+    func cancelOrderDetails() {
+        showOrderDetailsSheet = false
+    }
+
+    /// Called when user completes Apple Pay — calls checkout + placeOrder directly
+    func completeApplePay() {
+        showApplePaySheet = false
+        guard let formData = pendingOrderFormData,
+              let conversationId = conversationId else { return }
+        pendingOrderFormData = nil
+
+        Task {
+            isTyping = true
+            do {
+                let response = try await apiClient.completeCheckout(
+                    conversationId: conversationId,
+                    formData: formData
+                )
+                let assistantMessage = Message(
+                    text: response.confirmationText,
+                    isUser: false
+                )
+                messages.append(assistantMessage)
+            } catch {
+                handleError(error)
+            }
+            isTyping = false
+        }
+    }
+
+    /// Called when user cancels Apple Pay
+    func cancelApplePay() {
+        showApplePaySheet = false
+        pendingOrderFormData = nil
+    }
+
     func clearError() {
         errorMessage = nil
     }
@@ -123,13 +185,17 @@ class ChatViewModel {
         errorMessage = nil
         currentInput = ""
         menuShownInMessageId = nil
+        showOrderDetailsSheet = false
+        showApplePaySheet = false
+        applePayOrderTotal = nil
+        pendingOrderFormData = nil
         await startConversation()
     }
 
     // MARK: - Private Methods
 
     private func addWelcomeMessage() {
-        let welcomeText = "Welcome to Subway Catering! 🥪\n\nI'm here to help you order catering for your event. To get started, please share your ZIP code so I can find nearby Subway locations."
+        let welcomeText = "Welcome to Jimmy John's Catering! 🥪\n\nI'm here to help you order catering for your event. To get started, please share your ZIP code so I can find nearby Jimmy John's locations."
         let welcomeMessage = Message(
             text: welcomeText,
             isUser: false,
@@ -144,5 +210,36 @@ class ChatViewModel {
         } else {
             errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
         }
+    }
+
+    private func isCheckoutIntent(_ message: String) -> Bool {
+        let lower = message.lowercased()
+        let keywords = ["checkout", "check out", "proceed to checkout", "place order", "ready to order"]
+        return keywords.contains(where: { lower.contains($0) })
+    }
+
+    private func extractLocationName() -> String? {
+        // Find location name from the most recent assistant message that mentioned a store
+        for message in messages.reversed() where !message.isUser {
+            if let uiModel = message.uiModel, case .menu(let menuModel) = uiModel {
+                return menuModel.locationName
+            }
+        }
+        return nil
+    }
+
+    private func extractOrderTotal() -> Double? {
+        // Scan recent assistant messages for "Total: $XX.XX" pattern
+        let pattern = #"[Tt]otal[:\s*\*]+\$([0-9]+\.[0-9]{2})"#
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return nil }
+        for message in messages.reversed() where !message.isUser {
+            let text = message.text
+            let range = NSRange(text.startIndex..., in: text)
+            if let match = regex.firstMatch(in: text, range: range),
+               let valueRange = Range(match.range(at: 1), in: text) {
+                return Double(text[valueRange])
+            }
+        }
+        return nil
     }
 }

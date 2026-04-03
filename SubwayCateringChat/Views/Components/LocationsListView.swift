@@ -37,7 +37,7 @@ struct ModernLocationCard: View {
                     Circle()
                         .fill(
                             LinearGradient(
-                                colors: [Color.green.opacity(0.2), Color.green.opacity(0.05)],
+                                colors: [Color.primaryAccent.opacity(0.15), Color.primaryAccent.opacity(0.05)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -46,14 +46,14 @@ struct ModernLocationCard: View {
 
                     Image(systemName: "fork.knife")
                         .font(.title2)
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
                 }
 
                 if let distance = location.distance {
                     Text(String(format: "%.1f mi", distance))
                         .font(.caption)
                         .fontWeight(.bold)
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
                 }
             }
 
@@ -72,7 +72,7 @@ struct ModernLocationCard: View {
                             .font(.caption)
                             .fontWeight(.medium)
                     }
-                    .foregroundColor(.green)
+                    .foregroundColor(.primaryAccent)
                 }
             }
 
@@ -91,7 +91,7 @@ struct ModernLocationCard: View {
             RoundedRectangle(cornerRadius: 20)
                 .stroke(
                     LinearGradient(
-                        colors: [Color.green.opacity(0.3), Color.green.opacity(0.1)],
+                        colors: [Color.primaryAccent.opacity(0.3), Color.primaryAccent.opacity(0.1)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     ),

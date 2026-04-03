@@ -35,7 +35,7 @@ struct SplashScreenView: View {
 
     var body: some View {
         ZStack {
-            Color.green
+            Color.jjRed
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
@@ -46,7 +46,7 @@ struct SplashScreenView: View {
                     .opacity(opacity)
 
                 VStack(spacing: 8) {
-                    Text("Subway Catering")
+                    Text("Jimmy John's Catering")
                         .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(.white)

@@ -122,6 +122,13 @@ struct MenuCategory: Codable, Identifiable {
     let items: [MenuItem]
 
     var id: String { categoryId }
+
+    enum CodingKeys: String, CodingKey {
+        case categoryId
+        case name
+        case imageURL = "imageUrl"
+        case items
+    }
 }
 
 struct MenuItemServes: Codable {
@@ -152,6 +159,53 @@ struct MenuItem: Codable, Identifiable {
         }
         return nil
     }
+}
+
+// MARK: - Complete Checkout
+
+struct OrderFormData {
+    var numberOfGuests: Int = 8
+    var complimentaryItems: Set<String> = ["NAPKINS", "PLATES"]
+    var specialInstructions: String = ""
+    var vehicleType: String = "SUV"
+    var vehicleColor: String = "Black"
+    var mobilePhone: String = ""
+    var gratuityPercent: Int = 18
+
+    init(
+        numberOfGuests: Int = 8,
+        complimentaryItems: Set<String> = ["NAPKINS", "PLATES"],
+        specialInstructions: String = "",
+        vehicleType: String = "SUV",
+        vehicleColor: String = "Black",
+        mobilePhone: String = "",
+        gratuityPercent: Int = 18
+    ) {
+        self.numberOfGuests = numberOfGuests
+        self.complimentaryItems = complimentaryItems
+        self.specialInstructions = specialInstructions
+        self.vehicleType = vehicleType
+        self.vehicleColor = vehicleColor
+        self.mobilePhone = mobilePhone
+        self.gratuityPercent = gratuityPercent
+    }
+}
+
+struct CompleteCheckoutRequest: Codable {
+    let conversationId: String
+    let numberOfGuests: Int?
+    let complimentaryItems: [String]?
+    let specialInstructions: String?
+    let vehicleType: String
+    let vehicleColor: String
+    let mobilePhone: String
+    let gratuityPercent: Int?
+}
+
+struct CompleteCheckoutResponse: Codable {
+    let orderId: String
+    let status: String
+    let confirmationText: String
 }
 
 // MARK: - Error Response

@@ -114,7 +114,7 @@ struct ChatView: View {
                     }) {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.title2)
-                            .foregroundColor(canSendMessage ? .green : .gray)
+                            .foregroundColor(canSendMessage ? .primaryAccent : .gray)
                     }
                     .disabled(!canSendMessage)
                 }
@@ -122,7 +122,7 @@ struct ChatView: View {
                 .padding(.vertical, 12)
                 .background(Color(.systemBackground))
             }
-            .navigationTitle("Subway Catering")
+            .navigationTitle("Jimmy John's Catering")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -142,12 +142,31 @@ struct ChatView: View {
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
-                            .foregroundColor(.green)
+                            .foregroundColor(.primaryAccent)
                     }
                 }
             }
             .task {
                 await viewModel.startConversation()
+            }
+            .sheet(isPresented: $viewModel.showOrderDetailsSheet) {
+                OrderDetailsSheetView(
+                    locationName: viewModel.applePayLocationName,
+                    onPlaceOrder: { formData in viewModel.proceedToApplePay(formData: formData) },
+                    onCancel: { viewModel.cancelOrderDetails() }
+                )
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $viewModel.showApplePaySheet) {
+                ApplePaySheetView(
+                    orderTotal: viewModel.applePayOrderTotal,
+                    locationName: viewModel.applePayLocationName,
+                    onPay: { viewModel.completeApplePay() },
+                    onCancel: { viewModel.cancelApplePay() }
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
             }
         }
     }

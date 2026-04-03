@@ -22,7 +22,7 @@ struct MessageBubbleView: View {
                     .font(.body)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
-                    .background(message.isUser ? Color.green : Color(.systemGray5))
+                    .background(message.isUser ? Color.primaryAccent : Color(.systemGray5))
                     .foregroundColor(message.isUser ? .white : .primary)
                     .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
 

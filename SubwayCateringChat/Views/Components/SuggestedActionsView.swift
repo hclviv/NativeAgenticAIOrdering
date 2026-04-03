@@ -23,12 +23,12 @@ struct SuggestedActionsView: View {
                             .fontWeight(.medium)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 10)
-                            .background(Color.green.opacity(0.1))
-                            .foregroundColor(.green)
+                            .background(Color.primaryAccent.opacity(0.1))
+                            .foregroundColor(.primaryAccent)
                             .clipShape(Capsule())
                             .overlay(
                                 Capsule()
-                                    .stroke(Color.green, lineWidth: 1.5)
+                                    .stroke(Color.primaryAccent, lineWidth: 1.5)
                             )
                     }
                     .buttonStyle(.plain)

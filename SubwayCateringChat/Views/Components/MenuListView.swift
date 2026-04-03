@@ -29,7 +29,7 @@ struct MenuListView: View {
                     Spacer()
 
                     Image(systemName: "fork.knife")
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
                         .font(.title2)
                 }
                 .padding()
@@ -58,74 +58,62 @@ struct InstagramCategorySection: View {
         VStack(alignment: .leading, spacing: 0) {
             // Large Category Image
             if let imageURL = category.imageURL {
-                AsyncImage(url: URL(string: imageURL)) { phase in
-                    switch phase {
-                    case .empty:
-                        ZStack {
-                            Color.gray.opacity(0.2)
-                            ProgressView()
-                        }
-                        .frame(height: 280)
-
-                    case .success(let image):
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 280)
-                            .clipped()
-                            .overlay(
-                                // Gradient overlay for text readability
-                                LinearGradient(
-                                    colors: [.clear, .black.opacity(0.7)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
+                NetworkImage(url: URL(string: imageURL)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                        .clipped()
+                        .overlay(
+                            LinearGradient(
+                                colors: [.clear, .black.opacity(0.7)],
+                                startPoint: .top,
+                                endPoint: .bottom
                             )
-                            .overlay(
-                                // Category Name Overlay
-                                VStack {
+                        )
+                        .overlay(
+                            VStack {
+                                Spacer()
+                                HStack {
+                                    Text(category.name)
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.white)
                                     Spacer()
-                                    HStack {
-                                        Text(category.name)
-                                            .font(.title)
-                                            .fontWeight(.bold)
-                                            .foregroundColor(.white)
-                                        Spacer()
-                                    }
-                                    .padding()
                                 }
-                            )
-
-                    case .failure:
-                        ZStack {
-                            Color.gray.opacity(0.2)
-                            VStack(spacing: 8) {
-                                Image(systemName: "photo")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.gray)
-                                Text(category.name)
-                                    .font(.title2)
-                                    .fontWeight(.bold)
+                                .padding()
                             }
+                        )
+                } placeholder: {
+                    ZStack {
+                        LinearGradient(
+                            colors: [Color.primaryAccent.opacity(0.8), Color.primaryAccent.opacity(0.4)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        VStack(spacing: 8) {
+                            ProgressView()
+                                .tint(.white)
+                            Text(category.name)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
                         }
-                        .frame(height: 280)
-
-                    @unknown default:
-                        EmptyView()
                     }
+                    .frame(maxWidth: .infinity, minHeight: 200)
                 }
             } else {
                 // Fallback for no image
                 ZStack {
                     LinearGradient(
-                        colors: [Color.green.opacity(0.3), Color.green.opacity(0.1)],
+                        colors: [Color.primaryAccent.opacity(0.3), Color.primaryAccent.opacity(0.1)],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
                     )
                     Text(category.name)
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
                 }
                 .frame(height: 200)
             }
@@ -169,14 +157,14 @@ struct InstagramMenuItemCard: View {
             // Item Image Placeholder with gradient
             ZStack {
                 LinearGradient(
-                    colors: [Color.green.opacity(0.2), Color.green.opacity(0.05)],
+                    colors: [Color.primaryAccent.opacity(0.15), Color.primaryAccent.opacity(0.05)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
 
                 Image(systemName: "fork.knife")
                     .font(.system(size: 40))
-                    .foregroundColor(.green.opacity(0.4))
+                    .foregroundColor(.primaryAccent.opacity(0.4))
             }
             .frame(width: 200, height: 140)
             .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -205,12 +193,12 @@ struct InstagramMenuItemCard: View {
                     Text("$\(String(format: "%.2f", item.displayPrice))")
                         .font(.headline)
                         .fontWeight(.bold)
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
 
                     Spacer()
 
                     Image(systemName: "plus.circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundColor(.primaryAccent)
                         .font(.title2)
                 }
             }

@@ -8,13 +8,13 @@
 import SwiftUI
 
 extension Color {
-    // Subway Brand Colors
-    static let subwayGreen = Color(red: 0/255, green: 145/255, blue: 42/255)
-    static let subwayYellow = Color(red: 252/255, green: 200/255, blue: 0/255)
+    // Jimmy John's Brand Colors
+    static let jjRed = Color(red: 227/255, green: 24/255, blue: 54/255)
+    static let jjBlack = Color(red: 20/255, green: 20/255, blue: 20/255)
 
     // Custom UI Colors
-    static let primaryAccent = subwayGreen
-    static let secondaryAccent = subwayYellow
+    static let primaryAccent = jjRed
+    static let secondaryAccent = jjBlack
 }
 
 // Button Styles

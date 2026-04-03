@@ -34,7 +34,7 @@ enum APIError: LocalizedError {
 class APIClient {
     static let shared = APIClient()
 
-    private let baseURL = "http://172.18.32.76:3000/v1"//"http://localhost:3000/v1"
+    private let baseURL = "http://192.168.1.148:3000/v1"
     private let session: URLSession
     private let enableDebugLogging = true // Set to false to disable logs
 
@@ -132,6 +132,46 @@ class APIClient {
 
             let chatResponse = try JSONDecoder().decode(ChatResponse.self, from: data)
             return chatResponse
+        } catch let error as APIError {
+            logError(error)
+            throw error
+        } catch {
+            logError(error)
+            throw APIError.networkError(error)
+        }
+    }
+
+    func completeCheckout(conversationId: String, formData: OrderFormData) async throws -> CompleteCheckoutResponse {
+        guard let url = URL(string: "\(baseURL)/chat/complete-checkout") else {
+            throw APIError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let checkoutRequest = CompleteCheckoutRequest(
+            conversationId: conversationId,
+            numberOfGuests: formData.numberOfGuests,
+            complimentaryItems: Array(formData.complimentaryItems),
+            specialInstructions: formData.specialInstructions.isEmpty ? nil : formData.specialInstructions,
+            vehicleType: formData.vehicleType,
+            vehicleColor: formData.vehicleColor,
+            mobilePhone: formData.mobilePhone,
+            gratuityPercent: formData.gratuityPercent
+        )
+
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        request.httpBody = try encoder.encode(checkoutRequest)
+
+        logRequest(request)
+
+        do {
+            let (data, response) = try await session.data(for: request)
+            logResponse(data, response)
+            try validateResponse(response, data: data)
+            return try JSONDecoder().decode(CompleteCheckoutResponse.self, from: data)
         } catch let error as APIError {
             logError(error)
             throw error
